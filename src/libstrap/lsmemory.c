@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <stdlib.h>
 #include <libstrap.h>
 
@@ -10,7 +11,7 @@ struct memory_functions {
     void (*free_func)(void *ptr);
 } memory_functions = {false, malloc, calloc, realloc, free};
 
-int ls_register(
+int ls_memfunc_register(
     void *(*malloc_func)(size_t size),
     void *(*calloc_func)(size_t nmemb, size_t size),
     void *(*realloc_func)(void *ptr, size_t size),
@@ -35,6 +36,7 @@ void *ls_malloc(size_t size) {
         if(res) {
             return res;
         } else {
+            assert(res != NULL);
             abort();
         }
     } else {
@@ -48,6 +50,7 @@ void *ls_malloc0(size_t size) {
         if(res) {
             return res;
         } else {
+            assert(res != NULL);
             abort();
         }
     } else {
@@ -77,6 +80,7 @@ void *ls_calloc(size_t nmemb, size_t size) {
         if(res) {
             return res;
         } else {
+            assert(res != NULL);
             abort();
         }
     } else {
@@ -86,7 +90,7 @@ void *ls_calloc(size_t nmemb, size_t size) {
 
 void *ls_calloc_fail(size_t nmemb, size_t size) {
     if(nmemb != 0 && size != 0) {
-        return memory_functions.calloc(nmemb, size);
+        return memory_functions.calloc_func(nmemb, size);
     } else {
         return NULL;
     }
@@ -94,10 +98,11 @@ void *ls_calloc_fail(size_t nmemb, size_t size) {
 
 void *ls_realloc(void *ptr, size_t newsize) {
     if(newsize != 0) {
-        *res = ls_realloc_fail(ptr, newsize);
+        void *res = ls_realloc_fail(ptr, newsize);
         if(res) {
             return res;
         } else {
+            assert(res != NULL);
             abort();
         }
     } else {
@@ -109,9 +114,9 @@ void *ls_realloc(void *ptr, size_t newsize) {
 void *ls_realloc_fail(void *ptr, size_t newsize) {
     if(newsize != 0) {
         if(ptr) {
-            return memory_functions.realloc(ptr, newsize);
+            return memory_functions.realloc_func(ptr, newsize);
         } else {
-            return memory_functions.malloc(newsize);
+            return memory_functions.malloc_func(newsize);
         }
     } else {
         ls_free(ptr);
@@ -121,7 +126,7 @@ void *ls_realloc_fail(void *ptr, size_t newsize) {
 
 void *ls_free(void *ptr) {
     if(ptr) {
-        memory_functions.free(ptr);
+        memory_functions.free_func(ptr);
     }
     return NULL;
 }

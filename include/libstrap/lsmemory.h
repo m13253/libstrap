@@ -1,7 +1,7 @@
 #ifndef _LS_MEMORY_H
 #define _LS_MEMORY_H
 
-extern int ls_register(
+extern int ls_memfunc_register(
     void *(*malloc_func)(size_t size),
     void *(*calloc_func)(size_t nmemb, size_t size),
     void *(*realloc_func)(void *ptr, size_t size),

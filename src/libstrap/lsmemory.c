@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <libstrap.h>
 
-struct memory_functions {
+__thread struct memory_functions {
     bool set;
     void *(*malloc_func)(size_t size);
     void *(*calloc_func)(size_t nmemb, size_t size);

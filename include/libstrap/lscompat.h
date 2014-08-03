@@ -9,4 +9,6 @@
 #define __ls_attr_returns_nonnull    __attribute__((__returns_nonnull__))
 #define __ls_attr_warn_unused_result __attribute__((__warn_unused_result__))
 
+#define __ls_thread __thread
+
 #endif

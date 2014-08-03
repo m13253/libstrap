@@ -5,7 +5,7 @@ SRCDIR=src/libstrap
 
 .PHONY: all clean
 
-all: $(SRCDIR)/lsmemory.o $(SRCDIR)/lsstring.o
+all: $(SRCDIR)/lsmemory.o $(SRCDIR)/lsstring.o $(SRCDIR)/lsversion.o
 
 clean:
 	rm -Rf src/libstrap/*.o

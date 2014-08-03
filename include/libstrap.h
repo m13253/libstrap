@@ -5,5 +5,6 @@
 #include <libstrap/lstype.h>
 #include <libstrap/lsmemory.h>
 #include <libstrap/lsstring.h>
+#include <libstrap/lsversion.h>
 
 #endif

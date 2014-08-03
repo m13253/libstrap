@@ -2,6 +2,7 @@
 #define _LS_TYPE_H
 
 #include <inttypes.h>
+#include <stddef.h>
 #include <stdint.h>
 
 typedef int        bool;

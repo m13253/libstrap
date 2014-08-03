@@ -112,17 +112,63 @@ size_t ls_str_length(ls_const_str str) {
     }
 }
 
-/*
-static size_t utf8lengthmap[] = {0x00, 0x00, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfc, 0xfe};
+static inline bool ls_str_utf8length_checkcontinuation(const char *str, size_t length, size_t check_length) {
+    if(check_length < length) {
+        while(check_length-- > 0) {
+            if((*(str++) & 0xc0) != 0x80) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
+} __ls_attr_pure
 
 size_t ls_str_utf8length(ls_const_str str) {
     size_t totallength = ls_str_length(str);
     size_t i = 0;
     size_t res = 0;
     for(i = 0; i < totallength; i++) {
+        if(str[i] < 0x80) {        /* 0xxxxxxx */
+            res++;
+        } else if(str[i] < 0xc2) {
+            res++;
+        } else if(str[i] < 0xe0) { /* 110xxxXx 10xxxxxx */
+            if(ls_str_utf8length_checkcontinuation(str+i, totallength-i, 1)) {
+                i += 1;
+            }
+            res++;
+        } else if(str[i] < 0xf0) { /* 1110xxxx 10Xxxxxx 10xxxxxx */
+            if(ls_str_utf8length_checkcontinuation(str+i, totallength-i, 2) &&
+               (str[i] != 0xe0 || str[i+1] >= 0xa0)) {
+                i += 2;
+            }
+            res++;
+        } else if(str[i] < 0xf8) { /* 11110xxx 10xXxxxx 10xxxxxx ... */
+            if(ls_str_utf8length_checkcontinuation(str+i, totallength-i, 3) &&
+               (str[i] != 0xf0 || str[i+1] >= 0x90)) {
+                i += 3;
+            }
+            res++;
+        } else if(str[i] < 0xfc) { /* 111110xx 10xxXxxx 10xxxxxx ... */
+            if(ls_str_utf8length_checkcontinuation(str+i, totallength-i, 4) &&
+               (str[i] != 0xf8 || str[i+1] >= 0x88)) {
+                i += 4;
+            }
+            res++;
+        } else if(str[i] < 0xfe) { /* 1111110x 10xxxXxx 10xxxxxx ... */
+            if(ls_str_utf8length_checkcontinuation(str+i, totallength-i, 5) &&
+               (str[i] != 0xfc || str[i+1] >= 0x84)) {
+                i += 5;
+            }
+            res++;
+        } else {
+            res++;
+        }
     }
+    return res;
 }
-*/
 
 size_t ls_str_reserved_length(ls_const_str str) {
     size_t res = ls_const_str_header(str)->reserved;

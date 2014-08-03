@@ -2,6 +2,7 @@
 AR=ar
 CC=gcc
 INSTALL=install -Dm0644
+MKDIR=mkdir -p
 RM=rm -f
 RMDIR=rm -Rf
 XCOPY=cp -dr --no-preserve=ownership
@@ -26,6 +27,7 @@ install-static: libstrap.a
 	$(INSTALL) libstrap.a $(PREFIX)/lib/libstrap.a
 
 install-dev:
+	$(MKDIR) $(PREFIX)/
 	$(XCOPY) include $(PREFIX)/
 	$(INSTALL) pkgconfig/libstrap.pc $(PREFIX)/lib/pkgconfig/libstrap.pc
 
